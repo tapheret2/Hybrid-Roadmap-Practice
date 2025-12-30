@@ -1,0 +1,143 @@
+# ========================================
+# Python
+# ========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# ========================================
+# Node.js
+# ========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+
+# ========================================
+# IDEs and Editors
+# ========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ========================================
+# OS Files
+# ========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ========================================
+# Environment & Secrets
+# ========================================
+.env
+.env.local
+.env.*.local
+*.env
+secrets.json
+config.local.json
+
+# ========================================
+# ML/DS Specific
+# ========================================
+# Model files (can be large)
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+*.onnx
+*.pb
+
+# MLflow
+mlruns/
+mlartifacts/
+
+# Data files (add to git LFS or ignore)
+*.csv
+*.parquet
+*.json
+!package.json
+data/
+datasets/
+
+# ========================================
+# Logs and Temp
+# ========================================
+logs/
+*.log
+tmp/
+temp/
+.cache/
+
+# ========================================
+# Build & Output
+# ========================================
+*.out
+*.exe
+*.dll
+*.dylib
+
+# Docker
+.docker/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# ========================================
+# Project Specific
+# ========================================
+# Saved plots
+*.png
+*.jpg
+*.jpeg
+*.gif
+!README_assets/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
