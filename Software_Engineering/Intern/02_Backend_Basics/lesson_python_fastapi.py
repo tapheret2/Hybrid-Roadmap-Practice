@@ -1,112 +1,213 @@
 """
 ================================================================
-SE INTERN - BACKEND: PYTHON + FASTAPI
+SE INTERN - LESSON 6: PYTHON + FASTAPI
 ================================================================
 
-Cài đặt: pip install fastapi uvicorn
-Chạy: uvicorn lesson_python_fastapi:app --reload
-Docs: http://localhost:8000/docs (Swagger UI tự động)
-"""
-
-# --- 1. LÝ THUYẾT (THEORY) ---
-"""
-1. FastAPI: Framework Python hiện đại, nhanh, tự động tạo docs
-2. Pydantic: Validation data với type hints
-3. Path Parameters: /users/{id} → lấy id từ URL
-4. Query Parameters: /users?skip=0&limit=10 → params tùy chọn
-5. Request Body: Dữ liệu JSON gửi từ client
-6. Dependency Injection: Tái sử dụng logic (auth, database)
+Install: pip install fastapi uvicorn pydantic
+Run: uvicorn lesson_python_fastapi:app --reload
 """
 
 from fastapi import FastAPI, HTTPException, Query, Path
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, Field
 from typing import Optional, List
+from datetime import datetime
+
+# --- 1. THEORY ---
+"""
+1. FastAPI:
+   - Modern, fast Python web framework
+   - Automatic OpenAPI/Swagger docs
+   - Type hints for validation
+
+2. Pydantic Models:
+   - Data validation with Python types
+   - Automatic JSON serialization
+   - Field constraints
+
+3. Path & Query Parameters:
+   - Path: /users/{user_id}
+   - Query: /users?page=1&limit=10
+
+4. HTTP Methods:
+   - GET: Read
+   - POST: Create
+   - PUT: Full update
+   - PATCH: Partial update
+   - DELETE: Remove
+"""
+
+# --- 2. CODE SAMPLE ---
 
 app = FastAPI(
-    title="Learning API",
-    description="API để học FastAPI basics",
+    title="Product API",
+    description="A simple REST API for products",
     version="1.0.0"
 )
 
-# --- 2. CODE MẪU (CODE SAMPLE) ---
+# ========== MODELS ==========
 
-# Pydantic Models (Schema/DTO)
-class UserCreate(BaseModel):
-    name: str
-    email: EmailStr  # Tự động validate email format
-    age: Optional[int] = None
+class ProductBase(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    price: float = Field(..., gt=0)
+    stock: int = Field(default=0, ge=0)
+    category: Optional[str] = None
 
-class UserResponse(BaseModel):
+class ProductCreate(ProductBase):
+    pass
+
+class ProductUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    price: Optional[float] = Field(None, gt=0)
+    stock: Optional[int] = Field(None, ge=0)
+    category: Optional[str] = None
+
+class Product(ProductBase):
     id: int
-    name: str
-    email: str
-    age: Optional[int]
+    created_at: datetime
 
-# In-memory database
-users_db: List[dict] = [
-    {"id": 1, "name": "An", "email": "an@example.com", "age": 22},
-    {"id": 2, "name": "Bình", "email": "binh@example.com", "age": 25},
+    class Config:
+        from_attributes = True
+
+class ProductResponse(BaseModel):
+    success: bool
+    data: Product
+
+class ProductListResponse(BaseModel):
+    success: bool
+    count: int
+    data: List[Product]
+
+# ========== IN-MEMORY DATABASE ==========
+
+products_db: List[dict] = [
+    {"id": 1, "name": "Laptop", "price": 999.99, "stock": 10, "category": "Electronics", "created_at": datetime.now()},
+    {"id": 2, "name": "Phone", "price": 699.99, "stock": 25, "category": "Electronics", "created_at": datetime.now()},
+    {"id": 3, "name": "Book", "price": 29.99, "stock": 100, "category": "Books", "created_at": datetime.now()},
 ]
+next_id = 4
 
-# GET - Lấy tất cả users với pagination
-@app.get("/api/users", response_model=List[UserResponse])
-def get_users(
-    skip: int = Query(default=0, ge=0, description="Số bản ghi bỏ qua"),
-    limit: int = Query(default=10, le=100, description="Số bản ghi tối đa")
+# ========== ENDPOINTS ==========
+
+@app.get("/", tags=["Root"])
+def read_root():
+    return {"message": "Welcome to Product API", "docs": "/docs"}
+
+@app.get("/api/products", response_model=ProductListResponse, tags=["Products"])
+def get_products(
+    skip: int = Query(0, ge=0, description="Number of items to skip"),
+    limit: int = Query(10, ge=1, le=100, description="Number of items to return"),
+    category: Optional[str] = Query(None, description="Filter by category"),
+    min_price: Optional[float] = Query(None, gt=0, description="Minimum price"),
+    max_price: Optional[float] = Query(None, gt=0, description="Maximum price")
 ):
-    return users_db[skip:skip + limit]
+    """Get all products with optional filtering and pagination"""
+    result = products_db.copy()
+    
+    if category:
+        result = [p for p in result if p.get("category") == category]
+    if min_price:
+        result = [p for p in result if p["price"] >= min_price]
+    if max_price:
+        result = [p for p in result if p["price"] <= max_price]
+    
+    paginated = result[skip : skip + limit]
+    
+    return {"success": True, "count": len(paginated), "data": paginated}
 
-# GET - Lấy user theo ID
-@app.get("/api/users/{user_id}", response_model=UserResponse)
-def get_user(
-    user_id: int = Path(..., gt=0, description="User ID phải lớn hơn 0")
+@app.get("/api/products/{product_id}", response_model=ProductResponse, tags=["Products"])
+def get_product(
+    product_id: int = Path(..., gt=0, description="Product ID")
 ):
-    user = next((u for u in users_db if u["id"] == user_id), None)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+    """Get a single product by ID"""
+    product = next((p for p in products_db if p["id"] == product_id), None)
+    
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    return {"success": True, "data": product}
 
-# POST - Tạo user mới
-@app.post("/api/users", response_model=UserResponse, status_code=201)
-def create_user(user: UserCreate):
-    new_user = {
-        "id": len(users_db) + 1,
-        **user.model_dump()  # Convert Pydantic model → dict
+@app.post("/api/products", response_model=ProductResponse, status_code=201, tags=["Products"])
+def create_product(product: ProductCreate):
+    """Create a new product"""
+    global next_id
+    
+    new_product = {
+        "id": next_id,
+        **product.model_dump(),
+        "created_at": datetime.now()
     }
-    users_db.append(new_user)
-    return new_user
+    products_db.append(new_product)
+    next_id += 1
+    
+    return {"success": True, "data": new_product}
 
-# PUT - Cập nhật user
-@app.put("/api/users/{user_id}", response_model=UserResponse)
-def update_user(user_id: int, user_update: UserCreate):
-    for i, user in enumerate(users_db):
-        if user["id"] == user_id:
-            users_db[i] = {"id": user_id, **user_update.model_dump()}
-            return users_db[i]
-    raise HTTPException(status_code=404, detail="User not found")
+@app.put("/api/products/{product_id}", response_model=ProductResponse, tags=["Products"])
+def update_product(
+    product_id: int = Path(..., gt=0),
+    product: ProductCreate = None
+):
+    """Update a product (full update)"""
+    index = next((i for i, p in enumerate(products_db) if p["id"] == product_id), None)
+    
+    if index is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    products_db[index] = {
+        "id": product_id,
+        **product.model_dump(),
+        "created_at": products_db[index]["created_at"]
+    }
+    
+    return {"success": True, "data": products_db[index]}
 
-# DELETE - Xóa user
-@app.delete("/api/users/{user_id}", status_code=204)
-def delete_user(user_id: int):
-    global users_db
-    users_db = [u for u in users_db if u["id"] != user_id]
-    return None
+@app.patch("/api/products/{product_id}", response_model=ProductResponse, tags=["Products"])
+def partial_update_product(
+    product_id: int = Path(..., gt=0),
+    product: ProductUpdate = None
+):
+    """Partially update a product"""
+    index = next((i for i, p in enumerate(products_db) if p["id"] == product_id), None)
+    
+    if index is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    update_data = product.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        products_db[index][key] = value
+    
+    return {"success": True, "data": products_db[index]}
 
-# --- 3. BÀI TẬP (EXERCISE) ---
+@app.delete("/api/products/{product_id}", tags=["Products"])
+def delete_product(product_id: int = Path(..., gt=0)):
+    """Delete a product"""
+    index = next((i for i, p in enumerate(products_db) if p["id"] == product_id), None)
+    
+    if index is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    deleted = products_db.pop(index)
+    
+    return {"success": True, "message": f"Product '{deleted['name']}' deleted"}
+
+# --- 3. EXERCISES ---
 """
-BÀI 1: Thêm endpoint GET /api/users/search?name=xxx để tìm theo tên
-       Gợi ý: Dùng Query parameter
+EXERCISE 1: Add search endpoint
+           - GET /api/products/search?q=laptop
+           - Search in name and category
+           - Case-insensitive
 
-BÀI 2: Tạo model Product với fields: name, price, category, in_stock
-       Tạo CRUD endpoints cho /api/products
+EXERCISE 2: Add bulk operations
+           - POST /api/products/bulk (create multiple)
+           - DELETE /api/products/bulk (delete by IDs list)
 
-BÀI 3: Thêm validation:
-       - price phải > 0
-       - category phải là một trong: ["electronics", "clothing", "food"]
-       Gợi ý: Dùng Field() từ pydantic hoặc Literal
+EXERCISE 3: Add sorting
+           - Query params: ?sort_by=price&order=desc
+           - Support multiple fields: ?sort_by=category,price
 
-BÀI 4 (Nâng cao): Tạo dependency để kiểm tra API key từ header
-       Áp dụng cho tất cả routes với Depends()
+EXERCISE 4: Add error handling middleware
+           - Custom exception handlers
+           - Consistent error response format
+           - Logging
 """
 
 if __name__ == "__main__":

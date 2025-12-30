@@ -1,9 +1,9 @@
 """
 ================================================================
-DS INTERN - BÀI 4: DATA VISUALIZATION (MATPLOTLIB & SEABORN)
+DS INTERN - LESSON 4: DATA VISUALIZATION (MATPLOTLIB & SEABORN)
 ================================================================
 
-Cài đặt: pip install matplotlib seaborn
+Install: pip install matplotlib seaborn
 """
 
 import matplotlib.pyplot as plt
@@ -15,12 +15,12 @@ import numpy as np
 sns.set_theme(style="whitegrid")
 plt.rcParams['figure.figsize'] = (10, 6)
 
-# --- 1. LÝ THUYẾT (THEORY) ---
+# --- 1. THEORY ---
 """
-1. Matplotlib: Thư viện cơ bản, linh hoạt, nhiều customization
-2. Seaborn: Wrapper của Matplotlib, đẹp hơn, dễ dùng hơn cho thống kê
-3. Figure & Axes: Figure là khung, Axes là vùng vẽ
-4. Chọn biểu đồ phù hợp:
+1. Matplotlib: Basic library, flexible, lots of customization
+2. Seaborn: Wrapper around Matplotlib, prettier, easier for statistics
+3. Figure & Axes: Figure is the canvas, Axes is the plot area
+4. Choosing the right chart:
    - Distribution: Histogram, KDE, Boxplot
    - Relationship: Scatter, Line, Heatmap (correlation)
    - Comparison: Bar, Grouped Bar
@@ -37,9 +37,9 @@ df = pd.DataFrame({
     'gender': np.random.choice(['Male', 'Female'], 100)
 })
 
-# --- 2. CODE MẪU (CODE SAMPLE) ---
+# --- 2. CODE SAMPLE ---
 
-# 1. HISTOGRAM - Phân phối
+# 1. HISTOGRAM - Distribution
 def plot_histogram():
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     
@@ -57,7 +57,7 @@ def plot_histogram():
     plt.savefig('histogram.png', dpi=100)
     # plt.show()
 
-# 2. BOXPLOT - So sánh phân phối giữa các nhóm
+# 2. BOXPLOT - Compare distributions across groups
 def plot_boxplot():
     fig, ax = plt.subplots(figsize=(10, 6))
     sns.boxplot(data=df, x='region', y='income', hue='gender', palette='Set2')
@@ -65,7 +65,7 @@ def plot_boxplot():
     plt.savefig('boxplot.png', dpi=100)
     # plt.show()
 
-# 3. SCATTER PLOT - Mối quan hệ giữa 2 biến
+# 3. SCATTER PLOT - Relationship between 2 variables
 def plot_scatter():
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     
@@ -75,7 +75,7 @@ def plot_scatter():
     axes[0].set_ylabel('Income')
     axes[0].set_title('Age vs Income')
     
-    # Seaborn với regression line
+    # Seaborn with regression line
     sns.regplot(data=df, x='age', y='income', ax=axes[1], scatter_kws={'alpha': 0.5})
     axes[1].set_title('Age vs Income (with regression)')
     
@@ -83,7 +83,7 @@ def plot_scatter():
     plt.savefig('scatter.png', dpi=100)
     # plt.show()
 
-# 4. BAR CHART - So sánh
+# 4. BAR CHART - Comparison
 def plot_bar():
     region_income = df.groupby('region')['income'].mean().sort_values()
     
@@ -106,7 +106,7 @@ def plot_heatmap():
     plt.savefig('heatmap.png', dpi=100)
     # plt.show()
 
-# 6. MULTIPLE SUBPLOTS
+# 6. MULTIPLE SUBPLOTS - Dashboard
 def plot_dashboard():
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
     
@@ -127,30 +127,30 @@ def plot_dashboard():
     plt.savefig('dashboard.png', dpi=100)
     # plt.show()
 
-# --- 3. BÀI TẬP (EXERCISE) ---
+# --- 3. EXERCISES ---
 """
-BÀI 1: Tạo biểu đồ so sánh spending trung bình giữa Male và Female theo từng Region
-       (Grouped bar chart)
+EXERCISE 1: Create grouped bar chart comparing average spending 
+           between Male and Female by Region
 
-BÀI 2: Tạo một FacetGrid với:
-       - Mỗi subplot là một region
-       - Vẽ scatter plot của age vs income
-       Gợi ý: sns.FacetGrid hoặc sns.relplot
+EXERCISE 2: Create FacetGrid:
+           - One subplot per region
+           - Scatter plot of age vs income
+           Hint: sns.FacetGrid or sns.relplot
 
-BÀI 3: Tạo dashboard 4 biểu đồ:
-       - Top-left: KDE plot của income
-       - Top-right: Violin plot income by gender
-       - Bottom-left: Pair plot (age, income, spending)
-       - Bottom-right: Count plot của region
+EXERCISE 3: Create 4-panel dashboard:
+           - Top-left: KDE plot of income
+           - Top-right: Violin plot income by gender
+           - Bottom-left: Pair plot (age, income, spending)
+           - Bottom-right: Count plot of region
 """
 
 # --- TEST ---
 if __name__ == "__main__":
-    print("=== Chạy các hàm plot để xem kết quả ===")
+    print("=== Run plot functions to see results ===")
     # plot_histogram()
     # plot_boxplot()
     # plot_scatter()
     # plot_bar()
     # plot_heatmap()
     # plot_dashboard()
-    print("Uncomment các hàm và chạy để xem biểu đồ!")
+    print("Uncomment functions and run to see plots!")

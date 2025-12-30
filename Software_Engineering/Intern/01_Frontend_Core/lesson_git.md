@@ -1,124 +1,174 @@
-# SE INTERN - BÀI 4: GIT & GITHUB
+# SE INTERN - LESSON 4: GIT & GITHUB
 
-## --- 1. LÝ THUYẾT (THEORY) ---
+## 1. THEORY
 
-### Git là gì?
-- **Version Control System (VCS)**: Quản lý lịch sử thay đổi của code
-- **Repository (Repo)**: Thư mục chứa project và lịch sử Git
-- **Commit**: Một "snapshot" của code tại thời điểm cụ thể
-- **Branch**: Nhánh phát triển độc lập
+### What is Git?
+- **Version Control System**: Track changes in code over time
+- **Distributed**: Every developer has a complete history
+- **Branching**: Create separate lines of development
 
-### Workflow cơ bản
-```
-Working Directory → Staging Area → Local Repo → Remote Repo
-     (edit)           (add)         (commit)       (push)
-```
+### Key Concepts
+- **Repository (Repo)**: Project folder with .git history
+- **Commit**: A snapshot of changes
+- **Branch**: Independent line of development
+- **Merge**: Combine branches together
+- **Remote**: Server copy (GitHub, GitLab)
 
 ---
 
-## --- 2. CODE MẪU (COMMANDS) ---
+## 2. CODE SAMPLE (Commands)
 
-### Khởi tạo và Clone
+### Initial Setup
 ```bash
-# Khởi tạo repo mới
+# Configure user info (one time)
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+
+# Initialize new repository
 git init
 
-# Clone repo từ GitHub
-git clone https://github.com/username/repo.git
+# Clone existing repository
+git clone https://github.com/user/repo.git
 ```
 
-### Commit Flow
+### Basic Workflow
 ```bash
-# Xem trạng thái file
+# Check current status
 git status
 
-# Thêm file vào staging
-git add filename.js      # Thêm 1 file
-git add .                # Thêm tất cả
+# Stage changes
+git add filename.js       # Single file
+git add .                 # All changes
 
-# Commit với message
-git commit -m "feat: add login feature"
+# Commit changes
+git commit -m "feat: add login functionality"
 
-# Xem lịch sử commit
-git log --oneline
+# Push to remote
+git push origin main
 ```
 
-### Branch & Merge
+### Branching
 ```bash
-# Tạo và chuyển sang branch mới
+# Create and switch to new branch
 git checkout -b feature/login
 
-# Liệt kê branches
-git branch
-
-# Chuyển branch
+# Switch between branches
 git checkout main
+git checkout feature/login
 
-# Merge branch vào main
+# Merge branch into main
+git checkout main
 git merge feature/login
+
+# Delete branch after merge
+git branch -d feature/login
 ```
 
-### Push & Pull
+### Syncing with Remote
 ```bash
-# Đẩy code lên remote
-git push origin main
+# Fetch latest changes (no merge)
+git fetch origin
 
-# Kéo code mới về
+# Pull (fetch + merge)
 git pull origin main
+
+# Push changes
+git push origin feature/login
 ```
 
-### Undo Changes
+### Handling Conflicts
 ```bash
-# Bỏ file khỏi staging
-git reset HEAD filename.js
-
-# Hoàn tác thay đổi (chưa commit)
-git checkout -- filename.js
-
-# Sửa commit message gần nhất
-git commit --amend -m "new message"
+# When merge conflict occurs:
+1. Open conflicting files
+2. Look for conflict markers: <<<<<<< ======= >>>>>>>
+3. Edit to keep desired code
+4. Remove conflict markers
+5. git add .
+6. git commit -m "fix: resolve merge conflict"
 ```
-
----
-
-## --- 3. BÀI TẬP (EXERCISE) ---
-
-### BÀI 1: Thực hành cơ bản
-1. Tạo một thư mục mới và `git init`
-2. Tạo file `README.md` và commit với message "Initial commit"
-3. Thêm file `index.html` và commit với message "Add homepage"
-4. Xem lịch sử commit bằng `git log --oneline`
-
-### BÀI 2: Branching
-1. Tạo branch `feature/about-page`
-2. Thêm file `about.html` và commit
-3. Quay lại `main` và tạo branch `feature/contact-page`
-4. Thêm file `contact.html` và commit
-5. Merge cả 2 branch vào `main`
-
-### BÀI 3: Giải quyết Conflict
-1. Tạo 2 branch khác nhau
-2. Sửa cùng 1 dòng trong cùng 1 file ở cả 2 branch
-3. Merge và giải quyết conflict
 
 ---
 
 ## Commit Message Convention
 
+### Format
 ```
-<type>: <subject>
+<type>: <description>
 
-Types:
-- feat: Tính năng mới
-- fix: Sửa bug
-- docs: Thay đổi documentation
-- style: Format code (không ảnh hưởng logic)
-- refactor: Tái cấu trúc code
-- test: Thêm/sửa tests
-- chore: Các thay đổi khác (build, config)
+[optional body]
+[optional footer]
+```
 
-Ví dụ:
+### Types
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation only
+- `style`: Formatting (no code change)
+- `refactor`: Code restructure (no behavior change)
+- `test`: Adding tests
+- `chore`: Maintenance tasks
+
+### Examples
+```
 feat: add user authentication
 fix: resolve login redirect issue
 docs: update API documentation
+refactor: simplify order validation logic
+```
+
+---
+
+## 3. EXERCISES
+
+### Exercise 1: Basic Git Workflow
+1. Create a new repository
+2. Add README.md file
+3. Make 3 commits with proper messages
+4. Push to GitHub
+
+### Exercise 2: Branching
+1. Create branch `feature/header`
+2. Add header component
+3. Create branch `feature/footer`
+4. Add footer component
+5. Merge both into main
+
+### Exercise 3: Collaboration
+1. Fork a public repository
+2. Clone to local machine
+3. Create a feature branch
+4. Make changes and push
+5. Create a Pull Request
+
+### Exercise 4: Conflict Resolution
+1. Create two branches that modify the same file
+2. Merge first branch into main
+3. Try to merge second branch (will conflict)
+4. Resolve the conflict manually
+5. Complete the merge
+
+---
+
+## Useful Commands Reference
+
+```bash
+# View commit history
+git log --oneline -n 10
+
+# Undo last commit (keep changes)
+git reset --soft HEAD~1
+
+# Discard all local changes
+git checkout -- .
+
+# Stash changes temporarily
+git stash
+git stash pop
+
+# View differences
+git diff
+git diff --staged
+
+# Rebase (alternative to merge)
+git rebase main
 ```

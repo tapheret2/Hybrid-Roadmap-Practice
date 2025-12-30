@@ -1,96 +1,232 @@
-<!-- 
-================================================================
-SE INTERN - BÀI 1: HTML/CSS CƠ BẢN
-================================================================
--->
-
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bài 1: HTML & CSS Fundamentals</title>
+    <title>SE Intern - HTML & CSS Fundamentals</title>
     <style>
-        /* --- LÝ THUYẾT CSS ---
-        1. Selector: Chọn element để áp dụng style (tag, class, id)
-        2. Box Model: margin → border → padding → content
-        3. Flexbox: display: flex; justify-content; align-items;
-        4. Responsive: @media queries
+        /* ================================================================
+           SE INTERN - LESSON 1: HTML & CSS FUNDAMENTALS
+           ================================================================ */
+
+        /* --- 1. THEORY ---
+           
+           1. HTML (HyperText Markup Language):
+              - Structure of web pages
+              - Semantic tags: header, nav, main, section, article, footer
+              - Forms and inputs
+
+           2. CSS (Cascading Style Sheets):
+              - Styling HTML elements
+              - Selectors: class, id, element, attribute
+              - Specificity: inline > id > class > element
+
+           3. Box Model:
+              - Content → Padding → Border → Margin
+              - box-sizing: border-box (recommended)
+
+           4. Flexbox:
+              - Container: display: flex
+              - Main axis vs Cross axis
+              - justify-content, align-items, flex-wrap
+
+           5. Responsive Design:
+              - Mobile-first approach
+              - Media queries: @media (min-width: 768px)
+              - Relative units: rem, em, %, vw, vh
         */
 
-        /* --- CODE MẪU CSS --- */
+        /* --- 2. CODE SAMPLE --- */
+
+        /* CSS Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* Variables */
+        :root {
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --spacing: 1rem;
         }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+
+        /* Flexbox Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing);
+        }
+
+        .flex-container {
+            display: flex;
+            gap: var(--spacing);
+            flex-wrap: wrap;
+        }
+
+        .flex-item {
+            flex: 1;
+            min-width: 250px;
+            padding: var(--spacing);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Card Component */
         .card {
             background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            max-width: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
 
-        .card h1 {
-            color: #333;
-            margin-bottom: 1rem;
+        .card:hover {
+            transform: translateY(-4px);
         }
 
-        .btn {
-            background: #667eea;
+        .card-header {
+            background: var(--primary);
             color: white;
-            padding: 12px 24px;
+            padding: var(--spacing);
+        }
+
+        .card-body {
+            padding: var(--spacing);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: transform 0.2s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
-        .btn:hover {
-            transform: scale(1.05);
+        .btn-primary {
+            background: var(--primary);
+            color: white;
         }
 
-        /* --- BÀI TẬP CSS ---
-        1. Thêm class .input-field với border-radius và padding
-        2. Tạo hiệu ứng hover cho .card (shadow lớn hơn)
-        3. Thêm @media query để card full-width trên mobile
-        */
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .flex-container {
+                flex-direction: column;
+            }
+
+            .flex-item {
+                min-width: 100%;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <!-- 
-    --- LÝ THUYẾT HTML ---
-    1. Semantic tags: header, nav, main, section, article, footer
-    2. Forms: input, label, button, form
-    3. Attributes: id, class, src, href, alt
-    4. DOM hierarchy: parent > child
-    -->
+    <!-- HTML Structure -->
+    <header>
+        <nav class="container">
+            <h1>Learning HTML & CSS</h1>
+        </nav>
+    </header>
 
-    <!-- --- CODE MẪU HTML --- -->
-    <div class="card">
-        <h1>🎨 Welcome to Frontend</h1>
-        <p>Đây là ví dụ về HTML và CSS cơ bản.</p>
-        <br>
-        <button class="btn">Click Me!</button>
-    </div>
+    <main class="container">
+        <!-- Section: Flexbox Demo -->
+        <section style="margin-bottom: 2rem;">
+            <h2>Flexbox Layout</h2>
+            <div class="flex-container">
+                <div class="flex-item">
+                    <h3>Card 1</h3>
+                    <p>Flex items automatically adjust size.</p>
+                </div>
+                <div class="flex-item">
+                    <h3>Card 2</h3>
+                    <p>Use gap for spacing between items.</p>
+                </div>
+                <div class="flex-item">
+                    <h3>Card 3</h3>
+                    <p>flex-wrap allows items to wrap to next line.</p>
+                </div>
+            </div>
+        </section>
 
-    <!-- --- BÀI TẬP HTML ---
-    TODO: 
-    1. Thêm một form đăng nhập với 2 input (email, password) và 1 button
-    2. Sử dụng semantic tags: label, input với type phù hợp
-    3. Thêm placeholder cho các input
-    4. Style lại form theo ý bạn sử dụng CSS ở trên
+        <!-- Section: Card Component -->
+        <section style="margin-bottom: 2rem;">
+            <h2>Card Component</h2>
+            <div class="card" style="max-width: 400px;">
+                <div class="card-header">
+                    <h3>Card Title</h3>
+                </div>
+                <div class="card-body">
+                    <p>Card content with hover effect.</p>
+                    <button class="btn btn-primary">Click Me</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Form -->
+        <section>
+            <h2>Form Example</h2>
+            <form class="card" style="max-width: 500px; padding: 1rem;">
+                <div style="margin-bottom: 1rem;">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" placeholder="your@email.com"
+                        style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label for="message">Message:</label>
+                    <textarea id="message" rows="4"
+                        style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="container" style="margin-top: 2rem; text-align: center; color: #666;">
+        <p>&copy; 2024 SE Learning Path</p>
+    </footer>
+
+    <!-- --- 3. EXERCISES ---
+    
+    EXERCISE 1: Create a responsive navbar
+               - Logo on the left
+               - Menu items on the right
+               - Hamburger menu on mobile
+
+    EXERCISE 2: Build a grid layout with CSS Grid
+               - 3 columns on desktop
+               - 2 columns on tablet
+               - 1 column on mobile
+
+    EXERCISE 3: Style a complete form
+               - Text input, select, checkbox, radio
+               - Validation states (valid, invalid)
+               - Submit button with loading state
+
+    EXERCISE 4: Create a responsive footer
+               - Multiple columns with links
+               - Social media icons
+               - Copyright notice
     -->
 </body>
+
 </html>

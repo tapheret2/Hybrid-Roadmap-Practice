@@ -1,117 +1,195 @@
 """
 ================================================================
-DS INTERN - BÀI 1: PYTHON FUNDAMENTALS
+DS INTERN - LESSON 1: PYTHON FUNDAMENTALS
 ================================================================
-
-Mục tiêu: Nhớ các cú pháp Python quan trọng cho Data Science
 """
 
-# --- 1. LÝ THUYẾT (THEORY) ---
+# --- 1. THEORY ---
 """
-1. Variables: Không cần khai báo type, Python tự suy luận
-2. Data Types: int, float, str, bool, list, dict, tuple, set
-3. Control Flow: if/elif/else, for, while
-4. Functions: def, args, kwargs, lambda
-5. OOP Basics: class, __init__, self, inheritance
-6. List Comprehension: [expr for item in list if condition]
+1. Data Types:
+   - Numbers: int, float
+   - Strings: str
+   - Boolean: bool
+   - Collections: list, tuple, dict, set
+
+2. Control Flow:
+   - if/elif/else
+   - for loops
+   - while loops
+   - break, continue
+
+3. Functions:
+   - def keyword
+   - Parameters and arguments
+   - Return values
+   - Lambda functions
+
+4. OOP Basics:
+   - Classes and objects
+   - __init__ method
+   - Instance and class attributes
+   - Methods
 """
 
-# --- 2. CODE MẪU (CODE SAMPLE) ---
+# --- 2. CODE SAMPLE ---
 
-# Variables & Types
-name = "Data Scientist"
-age = 22
-salary = 15000.50
-is_active = True
-skills = ["Python", "SQL", "ML"]
-info = {"name": name, "age": age}
+# ========== DATA TYPES ==========
+name = "John"                  # str
+age = 25                       # int
+price = 99.99                  # float
+is_active = True               # bool
+hobbies = ["coding", "music"]  # list
+point = (10, 20)               # tuple
+person = {"name": "John"}      # dict
+unique_ids = {1, 2, 3}         # set
 
-# List Operations
+# ========== LIST OPERATIONS ==========
 numbers = [1, 2, 3, 4, 5]
-numbers.append(6)           # [1, 2, 3, 4, 5, 6]
-numbers.extend([7, 8])      # [1, 2, 3, 4, 5, 6, 7, 8]
-sliced = numbers[2:5]       # [3, 4, 5]
-reversed_list = numbers[::-1]  # Đảo ngược
 
-# Dictionary Operations
-person = {"name": "An", "age": 22}
-person["email"] = "an@example.com"  # Thêm key
-person.get("phone", "N/A")          # Lấy với default value
-for key, value in person.items():
+# Append and extend
+numbers.append(6)              # [1, 2, 3, 4, 5, 6]
+numbers.extend([7, 8])         # [1, 2, 3, 4, 5, 6, 7, 8]
+
+# Slicing
+first_three = numbers[:3]      # [1, 2, 3]
+last_two = numbers[-2:]        # [7, 8]
+reversed_list = numbers[::-1]  # [8, 7, 6, 5, 4, 3, 2, 1]
+
+# ========== DICTIONARY OPERATIONS ==========
+student = {
+    "name": "Alice",
+    "age": 20,
+    "grades": [85, 90, 88]
+}
+
+# Access
+print(student["name"])                     # Alice
+print(student.get("email", "N/A"))         # N/A (default)
+
+# Update
+student["email"] = "alice@example.com"
+student.update({"age": 21, "city": "NYC"})
+
+# Iterate
+for key, value in student.items():
     print(f"{key}: {value}")
 
-# List Comprehension (RẤT QUAN TRỌNG)
-squares = [x ** 2 for x in range(1, 6)]  # [1, 4, 9, 16, 25]
-evens = [x for x in range(10) if x % 2 == 0]  # [0, 2, 4, 6, 8]
+# ========== COMPREHENSIONS ==========
+# List comprehension
+squares = [x**2 for x in range(1, 6)]      # [1, 4, 9, 16, 25]
+evens = [x for x in range(10) if x % 2 == 0]
 
-# Dictionary Comprehension
-word_lengths = {word: len(word) for word in ["hello", "world"]}
+# Dict comprehension
+square_dict = {x: x**2 for x in range(1, 6)}  # {1: 1, 2: 4, ...}
 
-# Functions
+# ========== FUNCTIONS ==========
 def greet(name, greeting="Hello"):
-    """Docstring: Mô tả hàm"""
+    """Greet someone with a message"""
     return f"{greeting}, {name}!"
 
-# Lambda (Anonymous Function)
-square = lambda x: x ** 2
-sorted_items = sorted(skills, key=lambda x: len(x))
+def calculate_stats(*numbers):
+    """Calculate sum and average of numbers"""
+    total = sum(numbers)
+    avg = total / len(numbers) if numbers else 0
+    return {"sum": total, "average": avg}
 
-# Args & Kwargs
-def flexible_func(*args, **kwargs):
-    print("Args:", args)
-    print("Kwargs:", kwargs)
+# Lambda functions
+double = lambda x: x * 2
+add = lambda a, b: a + b
 
-# OOP Basics
-class DataProcessor:
-    def __init__(self, data):
-        self.data = data
+# ========== CLASSES ==========
+class BankAccount:
+    """Simple bank account class"""
     
-    def summary(self):
-        return {
-            "count": len(self.data),
-            "sum": sum(self.data),
-            "mean": sum(self.data) / len(self.data)
-        }
+    interest_rate = 0.02  # Class attribute
+    
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance
+        self.transactions = []
+    
+    def deposit(self, amount):
+        if amount > 0:
+            self.balance += amount
+            self.transactions.append(f"+${amount}")
+            return True
+        return False
+    
+    def withdraw(self, amount):
+        if 0 < amount <= self.balance:
+            self.balance -= amount
+            self.transactions.append(f"-${amount}")
+            return True
+        return False
+    
+    def get_balance(self):
+        return self.balance
+    
+    def __str__(self):
+        return f"Account({self.owner}, ${self.balance})"
+    
+    def __repr__(self):
+        return f"BankAccount('{self.owner}', {self.balance})"
 
-# Error Handling
+# ========== ERROR HANDLING ==========
 def safe_divide(a, b):
     try:
-        return a / b
+        result = a / b
     except ZeroDivisionError:
-        return "Cannot divide by zero"
+        print("Error: Cannot divide by zero")
+        return None
+    except TypeError:
+        print("Error: Invalid types")
+        return None
+    else:
+        return result
     finally:
         print("Division attempted")
 
-# --- 3. BÀI TẬP (EXERCISE) ---
-"""
-BÀI 1: Viết hàm nhận một list số và trả về list chỉ chứa số nguyên tố
-       Input: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-       Output: [2, 3, 5, 7]
-"""
-def filter_primes(numbers):
-    # Viết code tại đây
-    pass
+# ========== FILE HANDLING ==========
+def read_file(filepath):
+    try:
+        with open(filepath, 'r') as f:
+            return f.read()
+    except FileNotFoundError:
+        return None
 
-"""
-BÀI 2: Viết hàm đếm tần suất xuất hiện của các từ trong một câu
-       Input: "hello world hello python world world"
-       Output: {"hello": 2, "world": 3, "python": 1}
-"""
-def word_frequency(sentence):
-    # Gợi ý: Dùng dict comprehension hoặc collections.Counter
-    pass
+def write_file(filepath, content):
+    with open(filepath, 'w') as f:
+        f.write(content)
 
+# --- 3. EXERCISES ---
 """
-BÀI 3: Tạo class Student với:
-       - Attributes: name, scores (list điểm các môn)
-       - Method: average() trả về điểm trung bình
-       - Method: grade() trả về xếp loại (A/B/C/D/F)
-"""
-class Student:
-    pass
+EXERCISE 1: Create a ShoppingCart class
+           - add_item(name, price, quantity)
+           - remove_item(name)
+           - get_total()
+           - apply_discount(percent)
 
-# --- TEST ---
+EXERCISE 2: Implement a number guessing game
+           - Generate random number 1-100
+           - User guesses until correct
+           - Show "too high" or "too low" hints
+           - Count attempts
+
+EXERCISE 3: File operations
+           - Read a CSV file manually
+           - Parse into list of dictionaries
+           - Filter and save results
+
+EXERCISE 4: Decorator function
+           - Create @timer decorator
+           - Create @retry decorator
+           - Apply to sample functions
+"""
+
+# === TEST ===
 if __name__ == "__main__":
-    print("=== Hoàn thành các bài tập trên để kiểm tra ===")
-    # print(filter_primes([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-    # print(word_frequency("hello world hello python world world"))
+    print("=== Python Fundamentals ===")
+    print(greet("World"))
+    print(calculate_stats(1, 2, 3, 4, 5))
+    
+    account = BankAccount("John", 100)
+    account.deposit(50)
+    account.withdraw(30)
+    print(account)

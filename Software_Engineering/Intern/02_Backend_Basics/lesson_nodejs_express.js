@@ -1,108 +1,206 @@
 /**
  * ================================================================
- * SE INTERN - BACKEND: NODE.JS + EXPRESS.JS
+ * SE INTERN - LESSON 5: NODE.JS + EXPRESS.JS
  * ================================================================
  * 
- * Cài đặt: npm init -y && npm install express
- * Chạy: node lesson_nodejs_express.js
- */
-
-// --- 1. LÝ THUYẾT (THEORY) ---
-/**
- * 1. Express.js: Web framework cho Node.js, xử lý HTTP requests
- * 2. Middleware: Hàm xử lý request trước khi đến route handler
- * 3. Routing: Định nghĩa cách ứng dụng phản hồi với các endpoint
- * 4. Request/Response: req chứa data từ client, res gửi data về client
- * 5. HTTP Methods: GET (đọc), POST (tạo), PUT (cập nhật), DELETE (xóa)
+ * Install: npm init -y && npm install express
+ * Run: node lesson_nodejs_express.js
  */
 
 const express = require('express');
 const app = express();
-const PORT = 3000;
 
-// --- 2. CODE MẪU (CODE SAMPLE) ---
+// --- 1. THEORY ---
+/**
+ * 1. Node.js:
+ *    - JavaScript runtime outside browser
+ *    - Event-driven, non-blocking I/O
+ *    - npm: Package manager
+ * 
+ * 2. Express.js:
+ *    - Popular Node.js web framework
+ *    - Middleware-based architecture
+ *    - Routing and HTTP methods
+ * 
+ * 3. Middleware:
+ *    - Functions that run between request and response
+ *    - Order matters! Runs top to bottom
+ *    - Types: Application, Router, Error-handling
+ * 
+ * 4. HTTP Methods:
+ *    - GET: Read data
+ *    - POST: Create data
+ *    - PUT: Update entire resource
+ *    - PATCH: Partial update
+ *    - DELETE: Remove data
+ */
 
-// Middleware: Parse JSON body
-app.use(express.json());
+// --- 2. CODE SAMPLE ---
 
-// Middleware: Logging (tự viết)
+// ========== MIDDLEWARE ==========
+
+// Built-in middleware
+app.use(express.json());  // Parse JSON body
+app.use(express.urlencoded({ extended: true }));  // Parse form data
+
+// Custom logging middleware
 app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-    next(); // Chuyển sang middleware/route tiếp theo
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+    next();  // Pass to next middleware
 });
 
-// In-memory database (giả lập)
-let users = [
-    { id: 1, name: 'An', email: 'an@example.com' },
-    { id: 2, name: 'Bình', email: 'binh@example.com' },
+// ========== IN-MEMORY DATABASE ==========
+let products = [
+    { id: 1, name: 'Laptop', price: 999, stock: 10 },
+    { id: 2, name: 'Phone', price: 699, stock: 25 },
+    { id: 3, name: 'Tablet', price: 499, stock: 15 },
 ];
 
-// GET - Lấy tất cả users
-app.get('/api/users', (req, res) => {
-    res.json(users);
+let nextId = 4;
+
+// ========== ROUTES ==========
+
+// GET all products
+app.get('/api/products', (req, res) => {
+    // Query params: ?minPrice=500&maxPrice=1000
+    const { minPrice, maxPrice, search } = req.query;
+
+    let result = [...products];
+
+    if (minPrice) result = result.filter(p => p.price >= Number(minPrice));
+    if (maxPrice) result = result.filter(p => p.price <= Number(maxPrice));
+    if (search) result = result.filter(p =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    res.json({
+        success: true,
+        count: result.length,
+        data: result
+    });
 });
 
-// GET - Lấy user theo ID
-app.get('/api/users/:id', (req, res) => {
+// GET single product
+app.get('/api/products/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const user = users.find(u => u.id === id);
+    const product = products.find(p => p.id === id);
 
-    if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+    if (!product) {
+        return res.status(404).json({
+            success: false,
+            error: 'Product not found'
+        });
     }
-    res.json(user);
+
+    res.json({ success: true, data: product });
 });
 
-// POST - Tạo user mới
-app.post('/api/users', (req, res) => {
-    const { name, email } = req.body;
+// POST create product
+app.post('/api/products', (req, res) => {
+    const { name, price, stock } = req.body;
 
-    if (!name || !email) {
-        return res.status(400).json({ error: 'Name and email are required' });
+    // Validation
+    if (!name || !price) {
+        return res.status(400).json({
+            success: false,
+            error: 'Name and price are required'
+        });
     }
 
-    const newUser = {
-        id: users.length + 1,
+    const newProduct = {
+        id: nextId++,
         name,
-        email
+        price: Number(price),
+        stock: Number(stock) || 0
     };
-    users.push(newUser);
-    res.status(201).json(newUser);
+
+    products.push(newProduct);
+
+    res.status(201).json({
+        success: true,
+        data: newProduct
+    });
 });
 
-// PUT - Cập nhật user
-app.put('/api/users/:id', (req, res) => {
+// PUT update product
+app.put('/api/products/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const userIndex = users.findIndex(u => u.id === id);
+    const index = products.findIndex(p => p.id === id);
 
-    if (userIndex === -1) {
-        return res.status(404).json({ error: 'User not found' });
+    if (index === -1) {
+        return res.status(404).json({
+            success: false,
+            error: 'Product not found'
+        });
     }
 
-    users[userIndex] = { ...users[userIndex], ...req.body };
-    res.json(users[userIndex]);
+    const { name, price, stock } = req.body;
+    products[index] = { id, name, price: Number(price), stock: Number(stock) };
+
+    res.json({ success: true, data: products[index] });
 });
 
-// DELETE - Xóa user
-app.delete('/api/users/:id', (req, res) => {
+// DELETE product
+app.delete('/api/products/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    users = users.filter(u => u.id !== id);
-    res.status(204).send();
+    const index = products.findIndex(p => p.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({
+            success: false,
+            error: 'Product not found'
+        });
+    }
+
+    const deleted = products.splice(index, 1)[0];
+
+    res.json({
+        success: true,
+        message: `Product "${deleted.name}" deleted`
+    });
 });
 
-// Start server
+// ========== ERROR HANDLING ==========
+app.use((err, req, res, next) => {
+    console.error('Error:', err.message);
+    res.status(500).json({
+        success: false,
+        error: 'Internal server error'
+    });
+});
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        error: `Route ${req.method} ${req.path} not found`
+    });
+});
+
+// ========== START SERVER ==========
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
 
-// --- 3. BÀI TẬP (EXERCISE) ---
+// --- 3. EXERCISES ---
 /**
- * BÀI 1: Thêm route GET /api/users/search?name=xxx để tìm user theo tên
+ * EXERCISE 1: Add validation middleware
+ *            - Validate required fields
+ *            - Validate data types
+ *            - Return 400 for invalid data
  * 
- * BÀI 2: Tạo một middleware xác thực API key từ header x-api-key
- *        Nếu không có hoặc sai key → trả về 401 Unauthorized
+ * EXERCISE 2: Add pagination
+ *            - Query params: ?page=1&limit=10
+ *            - Return meta: { page, limit, total, totalPages }
  * 
- * BÀI 3: Tạo CRUD cho resource "products" với các fields:
- *        - id, name, price, category
- *        - Các routes: GET /api/products, POST /api/products, etc.
+ * EXERCISE 3: Add Router
+ *            - Separate routes into /routes/products.js
+ *            - Use express.Router()
+ * 
+ * EXERCISE 4: Add authentication middleware
+ *            - Check for Authorization header
+ *            - Validate token format
+ *            - Allow only authenticated users to POST/PUT/DELETE
  */

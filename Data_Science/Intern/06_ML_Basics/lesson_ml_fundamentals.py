@@ -1,9 +1,9 @@
 """
 ================================================================
-DS INTERN - BÀI 7: MACHINE LEARNING BASICS (SCIKIT-LEARN)
+DS INTERN - LESSON 7: MACHINE LEARNING BASICS (SCIKIT-LEARN)
 ================================================================
 
-Cài đặt: pip install scikit-learn
+Install: pip install scikit-learn
 """
 
 import numpy as np
@@ -20,14 +20,14 @@ from sklearn.metrics import (
     confusion_matrix, classification_report
 )
 
-# --- 1. LÝ THUYẾT (THEORY) ---
+# --- 1. THEORY ---
 """
 1. Supervised Learning:
-   - Regression: Dự đoán giá trị liên tục (giá nhà, lương, ...)
-   - Classification: Dự đoán nhãn (spam/not spam, bệnh/không bệnh, ...)
+   - Regression: Predict continuous values (house price, salary, ...)
+   - Classification: Predict categories (spam/not spam, disease/healthy, ...)
 
 2. Unsupervised Learning:
-   - Clustering: Gom nhóm dữ liệu (customer segmentation, ...)
+   - Clustering: Group similar data (customer segmentation, ...)
 
 3. ML Workflow:
    Data → Preprocessing → Train/Test Split → Train Model → Evaluate → Deploy
@@ -37,18 +37,18 @@ from sklearn.metrics import (
    - Classification: Accuracy, Precision, Recall, F1-score
 
 5. Overfitting vs Underfitting:
-   - Overfitting: Model quá phức tạp, học thuộc training data
-   - Underfitting: Model quá đơn giản, không học được pattern
+   - Overfitting: Model too complex, memorizes training data
+   - Underfitting: Model too simple, can't learn patterns
 """
 
-# --- 2. CODE MẪU (CODE SAMPLE) ---
+# --- 2. CODE SAMPLE ---
 
 # ========== REGRESSION ==========
 print("=" * 50)
-print("REGRESSION EXAMPLE: Dự đoán giá nhà")
+print("REGRESSION EXAMPLE: Predicting house prices")
 print("=" * 50)
 
-# Tạo dữ liệu giả lập
+# Generate synthetic data
 np.random.seed(42)
 X_reg = np.random.rand(100, 2) * 100  # 2 features: size, bedrooms
 y_reg = 50 + 0.3 * X_reg[:, 0] + 20 * X_reg[:, 1] + np.random.randn(100) * 10
@@ -79,7 +79,7 @@ print(f"Coefficients: {reg_model.coef_}")
 
 # ========== CLASSIFICATION ==========
 print("\n" + "=" * 50)
-print("CLASSIFICATION EXAMPLE: Phân loại Iris")
+print("CLASSIFICATION EXAMPLE: Iris Classification")
 print("=" * 50)
 
 from sklearn.datasets import load_iris
@@ -126,7 +126,7 @@ print("\n" + "=" * 50)
 print("CLUSTERING EXAMPLE: Customer Segmentation")
 print("=" * 50)
 
-# Tạo dữ liệu customer
+# Generate customer data
 np.random.seed(42)
 customers = pd.DataFrame({
     'annual_income': np.concatenate([
@@ -151,26 +151,26 @@ customers['cluster'] = kmeans.fit_predict(X_scaled)
 
 print(customers.groupby('cluster').mean())
 
-# --- 3. BÀI TẬP (EXERCISE) ---
+# --- 3. EXERCISES ---
 """
-BÀI 1: Tạo dataset với 3 features và 1 target (regression)
-       - Train Linear Regression
-       - Tính R² và giải thích ý nghĩa
+EXERCISE 1: Create dataset with 3 features and 1 target (regression)
+           - Train Linear Regression
+           - Calculate R² and explain its meaning
 
-BÀI 2: Tải dataset Titanic (từ seaborn hoặc kaggle)
-       - Preprocessing: Handle missing values, encode categorical
-       - Train model để dự đoán survived
-       - Tính Precision, Recall, F1
+EXERCISE 2: Load Titanic dataset (from seaborn or kaggle)
+           - Preprocessing: Handle missing values, encode categorical
+           - Train model to predict survived
+           - Calculate Precision, Recall, F1
 
-BÀI 3: Thử thay đổi hyperparameters của RandomForest
-       - n_estimators: 50, 100, 200
-       - max_depth: 3, 5, 10, None
-       - So sánh kết quả
+EXERCISE 3: Try different hyperparameters for RandomForest
+           - n_estimators: 50, 100, 200
+           - max_depth: 3, 5, 10, None
+           - Compare results
 
-BÀI 4 (Nâng cao): Implement Cross-Validation
-       - Dùng cross_val_score để đánh giá model robust hơn
+EXERCISE 4 (Advanced): Implement Cross-Validation
+           - Use cross_val_score for more robust evaluation
 """
 
 # --- TEST ---
 if __name__ == "__main__":
-    print("\n=== Hoàn thành các bài tập Machine Learning ===")
+    print("\n=== Complete the Machine Learning exercises ===")

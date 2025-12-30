@@ -1,10 +1,10 @@
 # 🚀 Complete Tech Career Roadmap
 
-**30 bài học** toàn diện cho SE, DS và Hybrid Roles.
+**30 lessons** covering SE, DS and Hybrid Roles.
 
 ---
 
-## 📊 Thống kê
+## 📊 Statistics
 
 | Track | Intern | Junior | Total |
 |-------|--------|--------|-------|
@@ -15,14 +15,14 @@
 
 ---
 
-## 🎯 Lộ trình SE
+## 🎯 SE Roadmap
 
-### Intern (3-6 tháng)
+### Intern (3-6 months)
 - Frontend: HTML/CSS, JavaScript, React+TS, Git
 - Backend: Node.js/Express, Python/FastAPI
 - Database: SQL Fundamentals
 
-### Junior (1-2 năm)  
+### Junior (1-2 years)  
 - Frontend Advanced: Hooks, State Management, Performance
 - Backend Advanced: Auth/JWT, ORM, GraphQL
 - DevOps: Docker, CI/CD, Cloud
@@ -30,14 +30,14 @@
 
 ---
 
-## 📈 Lộ trình DS
+## 📈 DS Roadmap
 
-### Intern (3-6 tháng)
+### Intern (3-6 months)
 - Python, NumPy, Pandas
 - Visualization: Matplotlib, Seaborn
 - Statistics, SQL, ML Basics
 
-### Junior (1-2 năm)
+### Junior (1-2 years)
 - Advanced ML: XGBoost, Time Series
 - Deep Learning: CNN, LSTM, Transfer Learning
 - MLOps: Model Deployment, Monitoring
@@ -56,7 +56,7 @@
 
 ---
 
-## 📂 Cấu trúc
+## 📂 Structure
 
 ```
 ├── Software_Engineering/
@@ -71,3 +71,14 @@
     ├── Analytics_Engineer/ (3 lessons)
     └── Research_Engineer/  (2 lessons)
 ```
+
+---
+
+## 📚 How to Learn
+
+1. **Read THEORY** - Understand core concepts
+2. **Run CODE SAMPLES** - See how to apply
+3. **Do EXERCISES** - Code without looking at samples
+4. **Explain** - Teach someone else or write notes
+
+> 💡 **Tip**: Complete 1 lesson per day, alternating SE and DS to maintain both skills.

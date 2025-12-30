@@ -1,140 +1,190 @@
 """
 ================================================================
-DS INTERN - BÀI 3: PANDAS MASTERY
+DS INTERN - LESSON 3: PANDAS MASTERY
 ================================================================
 
-Cài đặt: pip install pandas
-Pandas là thư viện chính để xử lý dữ liệu dạng bảng
+Pandas = Panel Data
+The most important library for data manipulation
+
+Install: pip install pandas
 """
 
 import pandas as pd
 import numpy as np
 
-# --- 1. LÝ THUYẾT (THEORY) ---
+# --- 1. THEORY ---
 """
-1. Series: Mảng 1 chiều với index
-2. DataFrame: Bảng 2 chiều (như Excel/SQL table)
-3. Index: Nhãn của rows, có thể là số hoặc string
-4. Vectorization: Pandas cũng dùng vectorization như NumPy
-5. Method Chaining: df.method1().method2().method3()
+1. Core Objects:
+   - Series: 1D labeled array
+   - DataFrame: 2D labeled table (like Excel)
+
+2. Key Operations:
+   - Selection: loc (label), iloc (integer)
+   - Filtering: Boolean indexing
+   - GroupBy: Split-Apply-Combine
+   - Merge/Join: Combine DataFrames
+
+3. Data Cleaning:
+   - Missing values: dropna, fillna
+   - Duplicates: drop_duplicates
+   - Type conversion: astype
+
+4. Performance Tips:
+   - Use vectorized operations
+   - Avoid iterating with for loops
+   - Use categories for repeated strings
 """
 
-# --- 2. CODE MẪU (CODE SAMPLE) ---
+# --- 2. CODE SAMPLE ---
 
-# Tạo DataFrame
+# ========== CREATE DATAFRAME ==========
 df = pd.DataFrame({
-    'name': ['An', 'Bình', 'Chi', 'Dũng', 'Hoa'],
-    'age': [22, 25, 23, 30, 28],
-    'salary': [5000, 6000, 4500, 8000, 7000],
-    'department': ['IT', 'HR', 'IT', 'Finance', 'HR']
+    'name': ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'],
+    'age': [25, 30, 35, 28, 32],
+    'city': ['NYC', 'LA', 'NYC', 'Chicago', 'LA'],
+    'salary': [70000, 85000, 90000, 75000, 80000],
+    'department': ['Engineering', 'Marketing', 'Engineering', 'HR', 'Marketing']
 })
 
-# Đọc/Ghi file
-# df = pd.read_csv('data.csv')
-# df.to_csv('output.csv', index=False)
-# df = pd.read_excel('data.xlsx')
+print("DataFrame:\n", df)
+print("\nInfo:")
+print(df.info())
+print("\nDescribe:\n", df.describe())
 
-# Xem tổng quan dữ liệu
-print(df.head())              # 5 dòng đầu
-print(df.tail(3))             # 3 dòng cuối
-print(df.info())              # Thông tin cột, dtype
-print(df.describe())          # Thống kê cơ bản
-print(df.shape)               # (rows, cols)
-print(df.columns.tolist())    # Danh sách cột
+# ========== SELECTION ==========
+# Column selection
+print(df['name'])                           # Single column (Series)
+print(df[['name', 'salary']])               # Multiple columns (DataFrame)
 
-# Selection (Chọn dữ liệu)
-print(df['name'])             # Chọn 1 cột → Series
-print(df[['name', 'age']])    # Chọn nhiều cột → DataFrame
-print(df.loc[0])              # Chọn theo label (index)
-print(df.iloc[0:3])           # Chọn theo vị trí số
-print(df.loc[df['age'] > 25]) # Chọn theo điều kiện
+# Row selection
+print(df.loc[0])                            # By label
+print(df.iloc[0])                           # By integer position
+print(df.loc[0:2, 'name':'city'])           # Slice by label
+print(df.iloc[0:3, 0:2])                    # Slice by position
 
-# Filtering (Lọc dữ liệu)
-it_staff = df[df['department'] == 'IT']
-high_salary = df[df['salary'] > 5000]
-combined = df[(df['age'] > 23) & (df['salary'] > 5000)]
+# ========== FILTERING ==========
+# Single condition
+high_salary = df[df['salary'] > 80000]
 
-# Creating/Modifying Columns
+# Multiple conditions
+nyc_engineers = df[(df['city'] == 'NYC') & (df['department'] == 'Engineering')]
+
+# isin
+la_chi = df[df['city'].isin(['LA', 'Chicago'])]
+
+# Query method (cleaner syntax)
+result = df.query("salary > 75000 and city == 'NYC'")
+
+# ========== CREATE/MODIFY COLUMNS ==========
 df['bonus'] = df['salary'] * 0.1
-df['full_income'] = df['salary'] + df['bonus']
-df['age_group'] = df['age'].apply(lambda x: 'Young' if x < 26 else 'Senior')
+df['full_name'] = df['name'] + ' (' + df['department'] + ')'
+df['age_group'] = pd.cut(df['age'], bins=[0, 25, 30, 100], labels=['Young', 'Mid', 'Senior'])
 
-# Handling Missing Values
-df_with_nan = df.copy()
-df_with_nan.loc[0, 'salary'] = np.nan
-print(df_with_nan.isna().sum())         # Đếm NaN theo cột
-df_filled = df_with_nan.fillna(0)       # Điền NaN bằng 0
-df_filled2 = df_with_nan['salary'].fillna(df_with_nan['salary'].mean())  # Điền bằng mean
-df_dropped = df_with_nan.dropna()       # Xóa rows có NaN
+# Apply function
+df['salary_level'] = df['salary'].apply(lambda x: 'High' if x > 80000 else 'Normal')
 
-# GroupBy (QUAN TRỌNG)
-grouped = df.groupby('department')
-print(grouped['salary'].mean())         # Lương TB theo phòng
-print(grouped.agg({
-    'salary': ['mean', 'max', 'min'],
-    'age': 'mean'
-}))
-
-# Sorting
-df_sorted = df.sort_values('salary', ascending=False)
-df_sorted_multi = df.sort_values(['department', 'salary'], ascending=[True, False])
-
-# Merge/Join
-df2 = pd.DataFrame({
-    'department': ['IT', 'HR', 'Finance'],
-    'budget': [100000, 50000, 80000]
+# ========== HANDLING MISSING VALUES ==========
+df_with_na = pd.DataFrame({
+    'A': [1, 2, None, 4],
+    'B': [None, 2, 3, 4],
+    'C': ['x', None, 'z', 'w']
 })
-merged = pd.merge(df, df2, on='department', how='left')
 
-# Pivot Table
-pivot = df.pivot_table(
-    values='salary',
-    index='department',
-    aggfunc=['mean', 'count']
+print("Missing values:\n", df_with_na.isnull().sum())
+
+# Remove rows with any missing
+df_clean = df_with_na.dropna()
+
+# Remove rows if specific column is missing
+df_clean = df_with_na.dropna(subset=['A'])
+
+# Fill missing values
+df_filled = df_with_na.fillna({
+    'A': df_with_na['A'].mean(),
+    'B': 0,
+    'C': 'Unknown'
+})
+
+# Forward/backward fill
+df_with_na['A'].fillna(method='ffill')      # Forward fill
+df_with_na['A'].fillna(method='bfill')      # Backward fill
+
+# ========== GROUPBY ==========
+# Basic groupby
+by_city = df.groupby('city')['salary'].mean()
+print("Average salary by city:\n", by_city)
+
+# Multiple aggregations
+summary = df.groupby('city').agg({
+    'salary': ['mean', 'min', 'max', 'count'],
+    'age': 'mean'
+})
+print("Summary:\n", summary)
+
+# Named aggregations
+summary = df.groupby('city').agg(
+    avg_salary=('salary', 'mean'),
+    employee_count=('name', 'count'),
+    avg_age=('age', 'mean')
 )
 
-# --- 3. BÀI TẬP (EXERCISE) ---
-"""
-BÀI 1: Cho DataFrame sales với cột: date, product, quantity, price
-       Tính tổng doanh thu (quantity * price) theo từng product
-"""
-def calculate_revenue():
-    sales = pd.DataFrame({
-        'date': pd.date_range('2024-01-01', periods=10),
-        'product': ['A', 'B', 'A', 'C', 'B', 'A', 'C', 'B', 'A', 'C'],
-        'quantity': [10, 5, 8, 3, 6, 12, 4, 7, 9, 5],
-        'price': [100, 200, 100, 150, 200, 100, 150, 200, 100, 150]
-    })
-    # Viết code tại đây
-    pass
+# Transform (returns same shape)
+df['salary_zscore'] = df.groupby('city')['salary'].transform(
+    lambda x: (x - x.mean()) / x.std()
+)
 
-"""
-BÀI 2: Xử lý dữ liệu có missing values
-       - Điền missing 'age' bằng trung bình theo 'department'
-       - Xóa rows có 'salary' bị NaN
-"""
-def handle_missing():
-    data = pd.DataFrame({
-        'name': ['A', 'B', 'C', 'D', 'E'],
-        'age': [22, np.nan, 25, np.nan, 30],
-        'salary': [5000, 6000, np.nan, 7000, 8000],
-        'department': ['IT', 'IT', 'HR', 'IT', 'HR']
-    })
-    # Viết code tại đây
-    pass
+# ========== SORTING ==========
+df_sorted = df.sort_values('salary', ascending=False)
+df_sorted = df.sort_values(['city', 'salary'], ascending=[True, False])
 
-"""
-BÀI 3: Tạo báo cáo tổng hợp từ df:
-       - Số nhân viên mỗi phòng
-       - Lương trung bình, min, max mỗi phòng
-       - Phòng có lương TB cao nhất
-"""
-def department_report(df):
-    # Viết code tại đây
-    pass
+# ========== MERGE/JOIN ==========
+departments = pd.DataFrame({
+    'department': ['Engineering', 'Marketing', 'HR', 'Finance'],
+    'budget': [1000000, 500000, 300000, 200000],
+    'head': ['John', 'Jane', 'Mike', 'Sarah']
+})
 
-# --- TEST ---
+# Inner join
+merged = pd.merge(df, departments, on='department', how='inner')
+
+# Left join (keep all employees)
+merged = pd.merge(df, departments, on='department', how='left')
+
+# ========== PIVOT TABLE ==========
+pivot = df.pivot_table(
+    values='salary',
+    index='city',
+    columns='department',
+    aggfunc='mean',
+    fill_value=0
+)
+print("Pivot table:\n", pivot)
+
+# --- 3. EXERCISES ---
+"""
+EXERCISE 1: EDA on a dataset
+           - Load CSV file
+           - Check shape, dtypes, missing values
+           - Summary statistics for numeric columns
+           - Value counts for categorical columns
+
+EXERCISE 2: Data cleaning pipeline
+           - Handle missing values appropriately
+           - Remove duplicates
+           - Fix data types
+           - Normalize/standardize values
+
+EXERCISE 3: Complex groupby
+           - Calculate running total within groups
+           - Rank items within groups
+           - Get top N per group
+
+EXERCISE 4: Merge multiple tables
+           - Users, Orders, Products tables
+           - Calculate total spend per user
+           - Find most popular products
+"""
+
 if __name__ == "__main__":
-    print("=== DataFrame mẫu ===")
-    print(df)
-    print("\n=== Hoàn thành các bài tập Pandas ===")
+    print("=== Pandas Mastery ===")
+    print(df.head())

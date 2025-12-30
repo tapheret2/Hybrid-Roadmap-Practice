@@ -1,22 +1,22 @@
 -- ================================================================
--- DS INTERN - BÀI 6: SQL FOR DATA SCIENCE
+-- DS INTERN - LESSON 6: SQL FOR DATA SCIENCE
 -- ================================================================
--- SQL là kỹ năng PHẢI CÓ của Data Scientist
+-- SQL is a MUST-HAVE skill for Data Scientists
 
--- --- 1. LÝ THUYẾT (THEORY) ---
+-- --- 1. THEORY ---
 /*
-1. SELECT: Truy xuất dữ liệu
-2. WHERE: Điều kiện lọc
-3. GROUP BY: Gom nhóm để aggregate
-4. HAVING: Lọc sau khi GROUP BY
-5. JOIN: Kết hợp nhiều bảng
-6. Window Functions: Tính toán trên "cửa sổ" dữ liệu
-7. Subqueries: Query lồng nhau
+1. SELECT: Retrieve data
+2. WHERE: Filter conditions
+3. GROUP BY: Aggregate by groups
+4. HAVING: Filter after GROUP BY
+5. JOIN: Combine multiple tables
+6. Window Functions: Calculate over "windows" of data
+7. Subqueries: Nested queries
 */
 
--- --- 2. CODE MẪU (CODE SAMPLE) ---
+-- --- 2. CODE SAMPLE ---
 
--- Tạo bảng mẫu
+-- Create sample tables
 CREATE TABLE customers (
     customer_id INT PRIMARY KEY,
     name VARCHAR(100),
@@ -35,10 +35,10 @@ CREATE TABLE orders (
 
 -- Insert sample data
 INSERT INTO customers VALUES 
-    (1, 'An', 'Hanoi', '2023-01-15'),
-    (2, 'Bình', 'HCM', '2023-02-20'),
-    (3, 'Chi', 'Hanoi', '2023-03-10'),
-    (4, 'Dũng', 'Danang', '2023-04-05');
+    (1, 'Alice', 'New York', '2023-01-15'),
+    (2, 'Bob', 'Los Angeles', '2023-02-20'),
+    (3, 'Charlie', 'New York', '2023-03-10'),
+    (4, 'Diana', 'Chicago', '2023-04-05');
 
 INSERT INTO orders VALUES
     (101, 1, 'Laptop', 1500, '2024-01-10'),
@@ -50,7 +50,7 @@ INSERT INTO orders VALUES
 
 -- BASIC SELECT
 SELECT * FROM customers;
-SELECT name, city FROM customers WHERE city = 'Hanoi';
+SELECT name, city FROM customers WHERE city = 'New York';
 
 -- AGGREGATE FUNCTIONS
 SELECT 
@@ -61,7 +61,7 @@ SELECT
     MIN(amount) as min_order
 FROM orders;
 
--- GROUP BY với HAVING
+-- GROUP BY with HAVING
 SELECT 
     customer_id,
     COUNT(*) as order_count,
@@ -81,7 +81,7 @@ FROM customers c
 LEFT JOIN orders o ON c.customer_id = o.customer_id
 GROUP BY c.customer_id, c.name, c.city;
 
--- WINDOW FUNCTIONS (RẤT QUAN TRỌNG)
+-- WINDOW FUNCTIONS (VERY IMPORTANT)
 SELECT 
     o.order_id,
     c.name,
@@ -99,7 +99,7 @@ FROM orders o
 JOIN customers c ON o.customer_id = c.customer_id;
 
 -- SUBQUERY
--- Khách hàng có đơn hàng lớn hơn trung bình
+-- Customers with orders above average
 SELECT name FROM customers
 WHERE customer_id IN (
     SELECT customer_id FROM orders
@@ -123,15 +123,16 @@ FROM customers c
 JOIN customer_stats cs ON c.customer_id = cs.customer_id
 WHERE cs.total_spent > 1000;
 
--- --- 3. BÀI TẬP (EXERCISE) ---
+-- --- 3. EXERCISES ---
 /*
-BÀI 1: Tìm top 3 khách hàng có tổng chi tiêu cao nhất
+EXERCISE 1: Find top 3 customers by total spending
 
-BÀI 2: Tính doanh thu theo tháng (YEAR-MONTH) và tăng trưởng so với tháng trước
+EXERCISE 2: Calculate monthly revenue with month-over-month growth
 
-BÀI 3: Tìm sản phẩm được mua nhiều nhất
+EXERCISE 3: Find the most purchased product
 
-BÀI 4: Với mỗi khách hàng, tìm đơn hàng lớn nhất của họ
+EXERCISE 4: For each customer, find their largest order
 
-BÀI 5 (Nâng cao): Tính tỷ lệ retention - khách hàng có mua lại trong tháng tiếp theo
+EXERCISE 5 (Advanced): Calculate retention rate - 
+           customers who purchased again in the following month
 */
