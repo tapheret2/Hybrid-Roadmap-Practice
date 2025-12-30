@@ -1,0 +1,96 @@
+<!-- 
+================================================================
+SE INTERN - BÀI 1: HTML/CSS CƠ BẢN
+================================================================
+-->
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 1: HTML & CSS Fundamentals</title>
+    <style>
+        /* --- LÝ THUYẾT CSS ---
+        1. Selector: Chọn element để áp dụng style (tag, class, id)
+        2. Box Model: margin → border → padding → content
+        3. Flexbox: display: flex; justify-content; align-items;
+        4. Responsive: @media queries
+        */
+
+        /* --- CODE MẪU CSS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 400px;
+        }
+
+        .card h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- BÀI TẬP CSS ---
+        1. Thêm class .input-field với border-radius và padding
+        2. Tạo hiệu ứng hover cho .card (shadow lớn hơn)
+        3. Thêm @media query để card full-width trên mobile
+        */
+    </style>
+</head>
+<body>
+    <!-- 
+    --- LÝ THUYẾT HTML ---
+    1. Semantic tags: header, nav, main, section, article, footer
+    2. Forms: input, label, button, form
+    3. Attributes: id, class, src, href, alt
+    4. DOM hierarchy: parent > child
+    -->
+
+    <!-- --- CODE MẪU HTML --- -->
+    <div class="card">
+        <h1>🎨 Welcome to Frontend</h1>
+        <p>Đây là ví dụ về HTML và CSS cơ bản.</p>
+        <br>
+        <button class="btn">Click Me!</button>
+    </div>
+
+    <!-- --- BÀI TẬP HTML ---
+    TODO: 
+    1. Thêm một form đăng nhập với 2 input (email, password) và 1 button
+    2. Sử dụng semantic tags: label, input với type phù hợp
+    3. Thêm placeholder cho các input
+    4. Style lại form theo ý bạn sử dụng CSS ở trên
+    -->
+</body>
+</html>
