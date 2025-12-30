@@ -182,7 +182,87 @@ EXERCISE 4: Decorator function
            - Create @retry decorator
            - Apply to sample functions
 """
+class ShoppingCart:
+    def __init__(self):
+        self.items = []
 
+    def add_item(self, name, price, quantity):
+        item = {"name": name, "price": price, "quantity": quantity}
+        self.items.append(item)
+        print(f"Added {name} to cart.")
+
+    def remove_item(self, name):
+        self.items = [x for x in self.items if x["name"] != name]
+
+    def get_total(self):
+        return sum(x["price"] * x["quantity"] for x in self.items)
+
+    def apply_discount(self, percent):
+        for x in self.items:
+            x["price"] = x["price"] * (1 - percent)
+import random
+def number_guessing_game():
+    print("Welcome to my scammy game!")
+    number = random.randint(1, 100)
+    cur_num = int(input("Please enter your number: "))
+    count = 1
+    while (cur_num != number):
+        if (cur_num > number):
+            print("To high")
+        if (cur_num < number):
+            print("To low")
+        cur_num = int(input("Please enter your number: "))
+        count += 1
+    print("That right, your steps is " + str(count))
+
+import csv
+
+def process_csv_manually(input_file, output_file, filter_col, filter_val):
+    results = []
+    with open(input_file, 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row[filter_col] == filter_val:
+                results.append(row)
+    
+    if results:
+        with open(output_file, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=results[0].keys())
+            writer.writeheader()
+            writer.writerows(results)
+    return results
+
+import time
+
+def timer(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"Function {func.__name__} took {end - start:.4f}s")
+        return result
+    return wrapper
+
+def retry(retries=3):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for i in range(retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    print(f"Retry {i+1}/{retries} failed: {e}")
+                    if i == retries - 1:
+                        raise e
+                    time.sleep(1)
+        return wrapper
+    return decorator
+
+@timer
+@retry(retries=2)
+def sample_function():
+    print("Executing sample task...")
+    time.sleep(0.5)
+    return "Done"
 # === TEST ===
 if __name__ == "__main__":
     print("=== Python Fundamentals ===")
