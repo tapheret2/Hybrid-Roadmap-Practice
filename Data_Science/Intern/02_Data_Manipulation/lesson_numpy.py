@@ -150,3 +150,46 @@ EXERCISE 4: Matrix operations
 
 if __name__ == "__main__":
     print("=== NumPy Fundamentals ===")
+array1 = np.arange(1, 26).reshape(5, 5)
+for i in range(5):
+   for j in range(5):
+      if i == j:
+         print(str(array1[i][j]) + " ")
+sum_anti = 0
+for i in range(5):
+   for j in range(5):
+      if i + j == 4:
+         sum_anti += array1[i][j]
+print(sum_anti)
+
+array2 = np.random.randn(1000)
+mean = np.mean(array2)
+std = np.std(array2)
+
+print("Mean: " + str(mean))
+print("Std: " + str(std))
+print("25th percentile: " + str(np.percentile(array2, 25)))
+print("50th percentile: " + str(np.percentile(array2, 50)))
+print("75th percentile: " + str(np.percentile(array2, 75)))
+
+# Count within standard deviations
+within_1 = np.sum((array2 >= mean - std) & (array2 <= mean + std))
+within_2 = np.sum((array2 >= mean - 2*std) & (array2 <= mean + 2*std))
+within_3 = np.sum((array2 >= mean - 3*std) & (array2 <= mean + 3*std))
+
+print("Within 1 std: " + str(within_1))
+print("Within 2 std: " + str(within_2))
+print("Within 3 std: " + str(within_3))
+
+array3=np.random.randint(0, 256, (100, 100))
+for i in range(100):
+   for j in range(100):
+      if array3[i][j]>128:
+         array3[i][j]=255
+      else:
+         array3[i, j] = 0
+
+# Calculate histogram
+counts, bins = np.histogram(array3, bins=256, range=(0, 256))
+print("Histogram for 0: " + str(counts[0]))
+print("Histogram for 255: " + str(counts[255]))
