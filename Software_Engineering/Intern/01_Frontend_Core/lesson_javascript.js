@@ -189,7 +189,33 @@ class Admin extends User {
  *            - Submit only when all fields are valid
  */
 
+// --- 4. EXERCISE SOLUTIONS ---
+
+// EXERCISE 1: Array manipulation
+const products = [
+    { name: "Laptop", price: 1200, category: "Electronics" },
+    { name: "Phone", price: 800, category: "Electronics" },
+    { name: "Mouse", price: 25, category: "Electronics" },
+    { name: "Keyboard", price: 150, category: "Electronics" },
+    { name: "Book", price: 20, category: "Education" },
+    { name: "Monitor", price: 300, category: "Electronics" }
+];
+
+// 1. Filter products with price > 100
+const expensiveProducts = products.filter(product => product.price > 100);
+console.log("Expensive Products (price > 100):", expensiveProducts);
+
+// 2. Map to get product names only
+const productNames = products.map(product => product.name);
+console.log("All Product Names:", productNames);
+
+// 3. Calculate total price with reduce
+const totalPrice = products.reduce((total, product) => total + product.price, 0);
+console.log("Total Price of all products:", totalPrice);
+
+// --- TEST CODE ---
 // Test code
+
 console.log("=== JavaScript Fundamentals ===");
 console.log(greet("World"));
 console.log("Doubled:", doubled);
