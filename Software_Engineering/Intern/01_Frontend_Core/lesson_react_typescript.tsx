@@ -60,7 +60,7 @@ const Button: React.FC<ButtonProps> = ({
 
     return (
         <button
-            className={`${baseStyle} ${variants[variant]}`}
+            className={`${baseStyle} ${variants[variant as keyof typeof variants]}`}
             disabled={disabled}
             onClick={onClick}
         >
@@ -163,7 +163,7 @@ const LoginForm: React.FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => ({ ...prev, [name as keyof FormData]: value }));
     };
 
     return (

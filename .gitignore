@@ -98,6 +98,7 @@ mlartifacts/
 *.parquet
 *.json
 !package.json
+!tsconfig.json
 data/
 datasets/
 
